@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Formasi;
 use App\Models\Pendaftar;
 use Illuminate\Http\Request;
+use App\Models\ReviewHistory;
 
 class PendaftarController extends Controller
 {
@@ -40,12 +41,7 @@ class PendaftarController extends Controller
 
         $nomor = 'PSK-' . date('Y') . '-' . str_pad(Pendaftar::count() + 1, 5, '0', STR_PAD_LEFT);
 
-        $data = $request->except([
-            'ktp',
-            'ijazah',
-            'pas_foto',
-            'file_pendukung',
-        ]);
+        $data = $request->except(['ktp', 'ijazah', 'pas_foto', 'file_pendukung']);
 
         $data['nomor_pendaftaran'] = $nomor;
         $data['status_verifikasi'] = 'Menunggu Verifikasi';
@@ -141,6 +137,14 @@ class PendaftarController extends Controller
 
         $pendaftar->save();
 
+        ReviewHistory::create([
+            'pendaftar_id' => $pendaftar->id,
+            'status_verifikasi' => $request->status_verifikasi,
+            'status_seleksi' => $request->status_seleksi,
+            'catatan' => $request->catatan,
+            'reviewer' => auth()->user()->name,
+        ]);
+
         return back()->with('success', 'Status pendaftar berhasil diperbarui');
     }
 
@@ -164,18 +168,14 @@ class PendaftarController extends Controller
 
     public function publikasi()
     {
-        $publikasi = Pendaftar::where('status_seleksi', 'Dipublikasikan')
-            ->latest()
-            ->get();
+        $publikasi = Pendaftar::where('status_seleksi', 'Dipublikasikan')->latest()->get();
 
         return view('public.publikasi', compact('publikasi'));
     }
 
     public function detailPublikasi($nomor)
     {
-        $artikel = Pendaftar::where('nomor_pendaftaran', $nomor)
-            ->where('status_seleksi', 'Dipublikasikan')
-            ->firstOrFail();
+        $artikel = Pendaftar::where('nomor_pendaftaran', $nomor)->where('status_seleksi', 'Dipublikasikan')->firstOrFail();
 
         return view('public.detail-publikasi', compact('artikel'));
     }
@@ -186,4 +186,17 @@ class PendaftarController extends Controller
 
         return view('public.bukti-pengajuan', compact('pendaftar'));
     }
+    public function downloadBuktiPdf($nomor)
+    {
+        $pendaftar = Pendaftar::where('nomor_pendaftaran', $nomor)->firstOrFail();
+
+        return view('public.bukti-pengajuan', compact('pendaftar'));
+    }
+
+    public function validasi($nomor)
+{
+    $pendaftar = Pendaftar::where('nomor_pendaftaran', $nomor)->first();
+
+    return view('public.validasi', compact('pendaftar', 'nomor'));
+}
 }

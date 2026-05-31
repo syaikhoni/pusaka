@@ -40,6 +40,10 @@
             {{ $pendaftar->nomor_pendaftaran }}
         </div>
 
+        <a class="btn" href="/bukti-pengajuan/{{ $pendaftar->nomor_pendaftaran }}/pdf">
+            Download Bukti PDF
+        </a>
+
         <p><b>Simpan nomor pendaftaran ini.</b></p>
         <p>Nomor ini digunakan untuk mengecek status verifikasi dan hasil seleksi.</p>
 

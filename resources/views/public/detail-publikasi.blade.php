@@ -1,37 +1,75 @@
 @extends('layouts.app')
 
 @section('content')
-    <div style="background:white;padding:30px;border-radius:12px;">
+    <style>
+        .article-box {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
 
-        <h1>{{ $pendaftar->judul_naskah }}</h1>
+        .article-box h1 {
+            margin-top: 0;
+            font-size: 34px;
+            color: #111827;
+        }
 
-        <p>
-            <b>Penulis:</b>
-            {{ $pendaftar->nama }}
-        </p>
+        .meta {
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
 
-        <p>
-            <b>Kategori:</b>
-            {{ $pendaftar->kategori_naskah }}
-        </p>
+        .abstract {
+            line-height: 1.9;
+            text-align: justify;
+            color: #374151;
+        }
 
-        <p>
-            <b>Instansi:</b>
-            {{ $pendaftar->instansi }}
-        </p>
+        .badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 18px;
+        }
+    </style>
+
+    <div class="article-box">
+
+        <span class="badge">Dipublikasikan</span>
+
+        <h1>{{ $artikel->judul_naskah }}</h1>
+
+        <div class="meta">
+            <b>Penulis:</b> {{ $artikel->nama }} <br>
+            <b>Instansi:</b> {{ $artikel->instansi ?? '-' }} <br>
+            <b>Kategori:</b> {{ $artikel->kategori_naskah ?? '-' }} <br>
+            <b>Nomor Naskah:</b> {{ $artikel->nomor_pendaftaran }} <br>
+            <b>Tanggal Publikasi:</b> {{ $artikel->updated_at->format('d-m-Y') }}
+        </div>
 
         <hr>
 
-        <h3>Abstrak</h3>
+        <h2>Abstrak</h2>
 
-        <p>
-            {{ $pendaftar->abstrak }}
+        <p class="abstract">
+            {{ $artikel->abstrak }}
         </p>
 
-        <hr>
+        <br>
 
-        <a target="_blank" href="{{ asset('storage/' . $pendaftar->file_pendukung) }}">
-            Download Naskah
+        @if ($artikel->file_pendukung)
+            <a class="btn" href="{{ asset('storage/' . $artikel->file_pendukung) }}" target="_blank">
+                Download Naskah
+            </a>
+        @endif
+
+        <a class="btn" href="/publikasi">
+            Kembali ke Publikasi
         </a>
 
     </div>

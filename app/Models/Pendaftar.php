@@ -31,4 +31,11 @@ class Pendaftar extends Model
         'status_seleksi',
         'catatan',
     ];
+
+        public function histories()
+    {
+        return $this->hasMany(
+            \App\Models\ReviewHistory::class
+        );
+    }
 }
