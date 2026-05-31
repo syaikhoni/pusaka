@@ -1,187 +1,205 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>PUSAKA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
     <style>
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
-            background: radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 30%), #f4f6f8;
+            background: #f4f6f8;
             color: #111827;
         }
+
         .navbar {
-            background: rgba(255, 255, 255, 0.92);
-            color: #111827;
-            padding: 18px 25px;
+            background: white;
+            padding: 16px 25px;
             display: flex;
             align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
-            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            gap: 18px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
+
         .navbar b {
             font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
-            letter-spacing: -0.02em;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 24px;
+            color: #2563eb;
         }
+
         .navbar a {
-            color: #4b5563;
-            margin-right: 15px;
+            color: #374151;
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.95rem;
-            letter-spacing: 0.02em;
-            transition: color 0.3s ease;
         }
+
         .navbar a:hover {
-            color: #667eea;
+            color: #2563eb;
         }
+
         .container {
+            max-width: 1100px;
+            margin: auto;
             padding: 30px 25px;
-            max-width: 1080px;
-            margin: 0 auto;
         }
+
         .dashboard-header {
-            margin-bottom: 28px;
-            padding: 24px;
             background: white;
-            border-radius: 22px;
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
         }
+
         .dashboard-header h1 {
             margin: 0;
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            letter-spacing: -0.03em;
-            font-weight: 700;
+            font-size: 34px;
         }
-        .dashboard-header p {
-            margin: 12px 0 0;
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card h2 {
+            margin: 0;
+            font-size: 32px;
+            color: #2563eb;
+        }
+
+        .stat-card p {
+            margin: 8px 0 0;
             color: #4b5563;
-            line-height: 1.7;
-            max-width: 680px;
         }
+
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
+
         .card {
             background: white;
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 24px;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
         }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
-        }
+
         .card h2 {
-            margin: 0 0 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #111827;
+            margin-top: 0;
         }
+
         .card p {
-            margin: 0;
             color: #4b5563;
-            line-height: 1.7;
-            flex-grow: 1;
+            line-height: 1.6;
         }
+
         .card a {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 18px;
             color: #2563eb;
-            text-decoration: none;
             font-weight: 600;
+            text-decoration: none;
         }
-        .card a:hover {
-            text-decoration: underline;
-        }
+
         table {
-            background: white;
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
+            background: white;
         }
+
         th {
             background: #1f2937;
             color: white;
         }
-        th, td {
+
+        th,
+        td {
             padding: 10px;
             border: 1px solid #ddd;
         }
-        input, select, textarea {
+
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
         }
-        button, .btn {
+
+        button,
+        .btn {
             background: #2563eb;
             color: white;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border: none;
-            text-decoration: none;
             border-radius: 8px;
+            text-decoration: none;
             cursor: pointer;
         }
-        button:hover, .btn:hover {
+
+        button:hover,
+        .btn:hover {
             background: #1d4ed8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+
+            .stat-grid,
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="navbar">
+    <div class="navbar">
+        <b>PUSAKA</b>
 
-    <b>PUSAKA</b>
+        <a href="/">Beranda</a>
+        <a href="/prosedur">Prosedur</a>
+        <a href="/daftar-online">Daftar Naskah</a>
+        <a href="/cek-status">Cek Status</a>
+        <a href="/publikasi">Publikasi</a>
 
-    <a href="/">Beranda</a>
-    <a href="/daftar-online">Daftar Naskah</a>
-    <a href="/cek-status">Cek Status</a>
-    <a href="/publikasi">Publikasi</a>
-
-    @auth
-        @if(auth()->user()->role == 'admin')
-
-            <a href="/admin/dashboard">Dashboard Admin</a>
+        @auth
+            <a href="/admin/dashboard">Dashboard</a>
 
             <form action="/logout" method="POST" style="display:inline;">
                 @csrf
-                <button
-                    style="
-                        background:#ef4444;
-                        color:white;
-                        border:none;
-                        padding:8px 15px;
-                        border-radius:8px;
-                        cursor:pointer;
-                    ">
-                    Logout
-                </button>
+                <button class="logout-btn" type="submit">Logout</button>
             </form>
+        @else
+            <a href="/login">Login Admin</a>
+        @endauth
+    </div>
 
-        @endif
-    @else
-        <a href="/login">Login Admin</a>
-    @endauth
-
-</div>
-
-<div class="container">
-    @yield('content')
-</div>
+    <div class="container">
+        @yield('content')
+    </div>
 
 </body>
+
 </html>

@@ -22,10 +22,8 @@ class PendaftarController extends Controller
             'kategori_naskah' => 'required',
             'abstrak' => 'required',
             'instansi' => 'required',
-
             'jenis_pendaftar' => 'required',
             'formasi_id' => 'nullable',
-
             'nik' => 'required',
             'nama' => 'required',
             'tempat_lahir' => 'required',
@@ -34,7 +32,6 @@ class PendaftarController extends Controller
             'alamat' => 'required',
             'no_hp' => 'required',
             'email' => 'nullable|email',
-
             'ktp' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'pas_foto' => 'nullable|mimes:jpg,jpeg,png|max:2048',
@@ -47,7 +44,7 @@ class PendaftarController extends Controller
             'ktp',
             'ijazah',
             'pas_foto',
-            'file_pendukung'
+            'file_pendukung',
         ]);
 
         $data['nomor_pendaftaran'] = $nomor;
@@ -98,11 +95,34 @@ class PendaftarController extends Controller
         return view('public.hasil-status', compact('pendaftar'));
     }
 
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $pendaftars = Pendaftar::latest()->get();
+        $query = Pendaftar::query();
+
+        if ($request->filled('cari')) {
+            $cari = $request->cari;
+
+            $query->where(function ($q) use ($cari) {
+                $q->where('nomor_pendaftaran', 'like', "%{$cari}%")
+                    ->orWhere('judul_naskah', 'like', "%{$cari}%")
+                    ->orWhere('nama', 'like', "%{$cari}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_seleksi', $request->status);
+        }
+
+        $pendaftars = $query->latest()->get();
 
         return view('admin.pendaftar.index', compact('pendaftars'));
+    }
+
+    public function showAdmin($id)
+    {
+        $pendaftar = Pendaftar::findOrFail($id);
+
+        return view('admin.pendaftar.show', compact('pendaftar'));
     }
 
     public function verifikasi(Request $request, $id)
@@ -124,6 +144,24 @@ class PendaftarController extends Controller
         return back()->with('success', 'Status pendaftar berhasil diperbarui');
     }
 
+    public function uploadRevisi(Request $request, $id)
+    {
+        $request->validate([
+            'file_revisi' => 'required|mimes:pdf,doc,docx|max:5120',
+        ]);
+
+        $pendaftar = Pendaftar::findOrFail($id);
+
+        $file = $request->file('file_revisi')->store('pendaftar/revisi', 'public');
+
+        $pendaftar->file_revisi = $file;
+        $pendaftar->status_seleksi = 'Menunggu Review';
+
+        $pendaftar->save();
+
+        return back()->with('success', 'Revisi naskah berhasil dikirim.');
+    }
+
     public function publikasi()
     {
         $publikasi = Pendaftar::where('status_seleksi', 'Dipublikasikan')
@@ -140,5 +178,12 @@ class PendaftarController extends Controller
             ->firstOrFail();
 
         return view('public.detail-publikasi', compact('artikel'));
+    }
+
+    public function buktiPengajuan($nomor)
+    {
+        $pendaftar = Pendaftar::where('nomor_pendaftaran', $nomor)->firstOrFail();
+
+        return view('public.bukti-pengajuan', compact('pendaftar'));
     }
 }

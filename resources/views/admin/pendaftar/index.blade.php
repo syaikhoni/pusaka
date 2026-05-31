@@ -1,87 +1,76 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="dashboard-header">
+        <h1>Manajemen Review Naskah</h1>
+        <p>Daftar seluruh naskah yang masuk ke sistem PUSAKA.</p>
+    </div>
 
-<h1>Manajemen Review Naskah</h1>
+    <form method="GET" action="/admin/pendaftar" style="margin-bottom:20px;">
+        <input type="text" name="cari" placeholder="Cari nomor, judul, atau penulis" value="{{ request('cari') }}">
 
-@if(session('success'))
-    <p style="color:green;">{{ session('success') }}</p>
-@endif
+        <select name="status">
+            <option value="">Semua Status</option>
+            <option value="Menunggu Review" {{ request('status') == 'Menunggu Review' ? 'selected' : '' }}>Menunggu Review
+            </option>
+            <option value="Sedang Direview" {{ request('status') == 'Sedang Direview' ? 'selected' : '' }}>Sedang Direview
+            </option>
+            <option value="Perlu Revisi" {{ request('status') == 'Perlu Revisi' ? 'selected' : '' }}>Perlu Revisi</option>
+            <option value="Diterima" {{ request('status') == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+            <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+            <option value="Dipublikasikan" {{ request('status') == 'Dipublikasikan' ? 'selected' : '' }}>Dipublikasikan
+            </option>
+        </select>
 
-<table>
-    <tr>
-        <th>No</th>
-        <th>Nomor Naskah</th>
-        <th>Penulis</th>
-        <th>NIK</th>
-        <th>Dokumen</th>
-        <th>Status Naskah</th>
-        <th>Review Editor</th>
-    </tr>
+        <br><br>
 
-    @foreach($pendaftars as $pendaftar)
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $pendaftar->nomor_pendaftaran }}</td>
-        <td>{{ $pendaftar->nama }}</td>
-        <td>{{ $pendaftar->nik }}</td>
+        <button type="submit">Filter</button>
+        <a class="btn" href="/admin/pendaftar">Reset</a>
+    </form>
 
-        <td>
-            @if($pendaftar->ktp)
-                <a href="{{ asset('storage/' . $pendaftar->ktp) }}" target="_blank">Identitas Penulis</a><br>
-            @endif
+    @if (session('success'))
+        <div style="background:#dcfce7;padding:15px;border-radius:10px;margin-bottom:20px;color:#166534;">
+            {{ session('success') }}
+        </div>
+    @endif
 
-            @if($pendaftar->ijazah)
-                <a href="{{ asset('storage/' . $pendaftar->ijazah) }}" target="_blank">Dokumen Pendukung</a><br>
-            @endif
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nomor</th>
+                    <th>Judul Naskah</th>
+                    <th>Penulis</th>
+                    <th>Kategori</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
 
-            @if($pendaftar->pas_foto)
-                <a href="{{ asset('storage/' . $pendaftar->pas_foto) }}" target="_blank">Foto Penulis</a><br>
-            @endif
-
-            @if($pendaftar->file_pendukung)
-                <a href="{{ asset('storage/' . $pendaftar->file_pendukung) }}" target="_blank">Naskah / File Utama</a>
-            @endif
-        </td>
-
-        <td>
-            <b>Status Administrasi:</b> {{ $pendaftar->status_verifikasi }}<br>
-            <b>Status Review:</b> {{ $pendaftar->status_seleksi }}<br>
-            <b>Catatan:</b> {{ $pendaftar->catatan ?? '-' }}
-        </td>
-
-        <td>
-            <form action="/admin/pendaftar/{{ $pendaftar->id }}/verifikasi" method="POST">
-                @csrf
-
-                <p>Status Administrasi</p>
-                <select name="status_verifikasi">
-                    <option value="Menunggu Verifikasi" {{ $pendaftar->status_verifikasi == 'Menunggu Verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
-                    <option value="Diterima" {{ $pendaftar->status_verifikasi == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                    <option value="Perbaikan" {{ $pendaftar->status_verifikasi == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                    <option value="Ditolak" {{ $pendaftar->status_verifikasi == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                </select>
-
-                <p>Status Review Naskah</p>
-                <select name="status_seleksi">
-                    <option value="Menunggu Review" {{ $pendaftar->status_seleksi == 'Menunggu Review' ? 'selected' : '' }}>Menunggu Review</option>
-                    <option value="Sedang Direview" {{ $pendaftar->status_seleksi == 'Sedang Direview' ? 'selected' : '' }}>Sedang Direview</option>
-                    <option value="Perlu Revisi" {{ $pendaftar->status_seleksi == 'Perlu Revisi' ? 'selected' : '' }}>Perlu Revisi</option>
-                    <option value="Diterima" {{ $pendaftar->status_seleksi == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                    <option value="Ditolak" {{ $pendaftar->status_seleksi == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                    <option value="Dipublikasikan" {{ $pendaftar->status_seleksi == 'Dipublikasikan' ? 'selected' : '' }}>Dipublikasikan</option>
-                </select>
-
-                <p>Catatan Editor</p>
-                <textarea name="catatan">{{ $pendaftar->catatan }}</textarea>
-
-                <br><br>
-
-                <button type="submit">Simpan Review</button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
-
+            <tbody>
+                @forelse($pendaftars as $pendaftar)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $pendaftar->nomor_pendaftaran }}</td>
+                        <td>{{ $pendaftar->judul_naskah }}</td>
+                        <td>{{ $pendaftar->nama }}</td>
+                        <td>{{ $pendaftar->kategori_naskah }}</td>
+                        <td><b>{{ $pendaftar->status_seleksi }}</b></td>
+                        <td>
+                            <a class="btn" href="/admin/pendaftar/{{ $pendaftar->id }}">
+                                Detail Review
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" style="text-align:center;">
+                            Belum ada data naskah.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 @endsection
